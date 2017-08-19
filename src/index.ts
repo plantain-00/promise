@@ -50,7 +50,7 @@ export default class Promise<T> {
             reject(reason);
         });
     }
-    public static resolve<T>(value: T): Promise<T> {
+    public static resolve<T>(value: T | Promise<T>): Promise<T> {
         return new Promise<T>((resolve, reject) => {
             resolve(value);
         });

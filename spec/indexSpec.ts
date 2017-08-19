@@ -126,7 +126,6 @@ it("promise.all resolve", () => {
         expect(values).toEqual([11, 12]);
     });
 
-
     Promise.all([
         new Promise(resolve => {
             setTimeout(() => {
@@ -175,5 +174,11 @@ it("resolve promise then", () => {
         resolve(Promise.resolve(20));
     }).then(value => {
         expect(value).toEqual(20);
+    });
+
+    new Promise<number>((resolve, reject) => {
+        resolve(Promise.resolve(Promise.resolve(21)));
+    }).then(value => {
+        expect(value).toEqual(21);
     });
 });
