@@ -1,17 +1,10 @@
 import Promise from "../dist/nodejs/index";
 
-it("", () => {
+it("resolve then", () => {
     new Promise<number>((resolve, reject) => {
         resolve(1);
     }).then(value => {
         expect(value).toEqual(1);
-    });
-
-    new Promise<number>((resolve, reject) => {
-        resolve(1.1);
-        resolve(1.2);
-    }).then(value => {
-        expect(value).toEqual(1.1);
     });
 
     new Promise<number>((resolve, reject) => {
@@ -21,7 +14,18 @@ it("", () => {
     }, reason => {
         fail();
     });
+});
 
+it("resolve resolve then", () => {
+    new Promise<number>((resolve, reject) => {
+        resolve(1.1);
+        resolve(1.2);
+    }).then(value => {
+        expect(value).toEqual(1.1);
+    });
+});
+
+it("reject then", () => {
     new Promise<number>((resolve, reject) => {
         reject(3);
     }).then(value => {
@@ -29,7 +33,9 @@ it("", () => {
     }, reason => {
         expect(reason).toEqual(3);
     });
+});
 
+it("reject then catch", () => {
     new Promise<number>((resolve, reject) => {
         reject(4);
     }).then(value => {
@@ -47,7 +53,9 @@ it("", () => {
     }).catch(reason => {
         expect(reason).toEqual(5);
     });
+});
 
+it("throw then catch", () => {
     new Promise<number>((resolve, reject) => {
         throw 6;
     }).then(value => {
@@ -55,7 +63,9 @@ it("", () => {
     }).catch(reason => {
         expect(reason).toEqual(6);
     });
+});
 
+it("reject in then", () => {
     new Promise<number>((resolve, reject) => {
         resolve(7);
     }).then(value => {
@@ -64,7 +74,9 @@ it("", () => {
     }).catch(reason => {
         expect(reason).toEqual(7);
     });
+});
 
+it("throw in then", () => {
     new Promise<number>((resolve, reject) => {
         resolve(8);
     }).then(value => {
@@ -73,7 +85,9 @@ it("", () => {
     }).catch(reason => {
         expect(reason).toEqual(8);
     });
+});
 
+it("return in then", () => {
     new Promise<number>((resolve, reject) => {
         resolve(9);
     }).then(value => {
@@ -84,6 +98,17 @@ it("", () => {
     });
 
     new Promise<number>((resolve, reject) => {
+        resolve(17);
+    }).then(value => {
+        expect(value).toEqual(17);
+        return value + " string";
+    }).then(value => {
+        expect(value).toEqual("17 string");
+    });
+});
+
+it("return promise in then", () => {
+    new Promise<number>((resolve, reject) => {
         resolve(10);
     }).then(value => {
         expect(value).toEqual(10);
@@ -91,7 +116,9 @@ it("", () => {
     }).then(value => {
         expect(value).toEqual(10);
     });
+});
 
+it("promise.all resolve", () => {
     Promise.all([
         Promise.resolve(11),
         Promise.resolve(12),
@@ -99,14 +126,6 @@ it("", () => {
         expect(values).toEqual([11, 12]);
     });
 
-    Promise.all([
-        Promise.resolve(13),
-        Promise.reject(14),
-    ]).then(values => {
-        fail();
-    }, reason => {
-        expect(reason).toEqual(14);
-    });
 
     Promise.all([
         new Promise(resolve => {
@@ -122,16 +141,20 @@ it("", () => {
     ]).then(values => {
         expect(values).toEqual([15, 16]);
     });
+});
 
-    new Promise<number>((resolve, reject) => {
-        resolve(17);
-    }).then(value => {
-        expect(value).toEqual(17);
-        return value + " string";
-    }).then(value => {
-        expect(value).toEqual("17 string");
+it("promise.all reject", () => {
+    Promise.all([
+        Promise.resolve(13),
+        Promise.reject(14),
+    ]).then(values => {
+        fail();
+    }, reason => {
+        expect(reason).toEqual(14);
     });
+});
 
+it("reject catch", () => {
     new Promise<number>((resolve, reject) => {
         reject(18);
     }).catch(reason => {
@@ -145,7 +168,9 @@ it("", () => {
     }).catch(reason => {
         expect(reason).toEqual(19);
     });
+});
 
+it("resolve promise then", () => {
     new Promise<number>((resolve, reject) => {
         resolve(Promise.resolve(20));
     }).then(value => {
