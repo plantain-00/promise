@@ -19,13 +19,13 @@ it("", () => {
     }).then(value => {
         expect(value).toEqual(2);
     }, reason => {
-        expect(reason).toHaveBeenCalledTimes(0);
+        fail();
     });
 
     new Promise<number>((resolve, reject) => {
         reject(3);
     }).then(value => {
-        expect(value).toHaveBeenCalledTimes(0);
+        fail();
     }, reason => {
         expect(reason).toEqual(3);
     });
@@ -33,17 +33,17 @@ it("", () => {
     new Promise<number>((resolve, reject) => {
         reject(4);
     }).then(value => {
-        expect(value).toHaveBeenCalledTimes(0);
+        fail();
     }, reason => {
         expect(reason).toEqual(4);
     }).catch(reason => {
-        expect(reason).toHaveBeenCalledTimes(0);
+        fail();
     });
 
     new Promise<number>((resolve, reject) => {
         reject(5);
     }).then(value => {
-        expect(value).toHaveBeenCalledTimes(0);
+        fail();
     }).catch(reason => {
         expect(reason).toEqual(5);
     });
@@ -51,7 +51,7 @@ it("", () => {
     new Promise<number>((resolve, reject) => {
         throw 6;
     }).then(value => {
-        expect(value).toHaveBeenCalledTimes(0);
+        fail();
     }).catch(reason => {
         expect(reason).toEqual(6);
     });
@@ -103,9 +103,9 @@ it("", () => {
         Promise.resolve(13),
         Promise.reject(14),
     ]).then(values => {
-        expect(values).toEqual([13, 14]);
+        fail();
     }, reason => {
-        expect(reason).toHaveBeenCalledTimes(0);
+        expect(reason).toEqual(14);
     });
 
     Promise.all([
