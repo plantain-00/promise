@@ -53,6 +53,16 @@ it("reject then catch", () => {
     }).catch(reason => {
         expect(reason).toEqual(5);
     });
+
+    new Promise<number>((resolve, reject) => {
+        reject(5);
+    }).then(value => {
+        fail();
+    }).then(value => {
+        fail();
+    }).catch(reason => {
+        expect(reason).toEqual(5);
+    });
 });
 
 it("throw then catch", () => {
