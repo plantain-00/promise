@@ -3,11 +3,11 @@
  */
 export default class Promise<T> {
   private state = State.pending
-  private onFilfilled: (value: T) => void
-  private onRejected: (reason: any) => void
-  private onCatched: (reason: any) => void
-  private value: T
-  private reason: any
+  private onFilfilled!: ((value: T) => void)
+  private onRejected!: (reason: any) => void
+  private onCatched!: (reason: any) => void
+  private value!: T
+  private reason!: any
 
   constructor (executor: (resolve: (value: T | Promise<T>) => void, reject: (reason: any) => void) => void) {
     try {
