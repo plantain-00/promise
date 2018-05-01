@@ -9,7 +9,8 @@ export default class Promise<T> {
   private value!: T
   private reason!: any
 
-  constructor (executor: (resolve: (value: T | Promise<T>) => void, reject: (reason: any) => void) => void) {
+  // tslint:disable-next-line:cognitive-complexity
+  constructor(executor: (resolve: (value: T | Promise<T>) => void, reject: (reason: any) => void) => void) {
     try {
       executor(value => {
         if (this.state === State.pending) {
@@ -37,7 +38,7 @@ export default class Promise<T> {
     }
   }
 
-  public static all<T> (promises: Promise<T>[]): Promise<T[]> {
+  public static all<T>(promises: Promise<T>[]): Promise<T[]> {
     return new Promise<T[]>((resolve, reject) => {
       const values: T[] = new Array(promises.length)
       let resolvedPromiseCount = 0
@@ -61,7 +62,7 @@ export default class Promise<T> {
     })
   }
 
-  public static race<T> (promises: Promise<T>[]): Promise<T> {
+  public static race<T>(promises: Promise<T>[]): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       let pending = true
       for (const promise of promises) {
@@ -80,29 +81,24 @@ export default class Promise<T> {
     })
   }
 
-  public static reject<T> (reason: any): Promise<T> {
+  public static reject<T>(reason: any): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       reject(reason)
     })
   }
-  public static resolve<T> (value: T | Promise<T>): Promise<T> {
+  public static resolve<T>(value: T | Promise<T>): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       resolve(value)
     })
   }
 
-  public then<TResult1, TResult2> (onFulfilled: (value: T) => never | TResult1 | Promise<TResult1>, onRejected?: (reason: any) => never | TResult2 | Promise<TResult2>): Promise<void | TResult1 | TResult2> {
+  // tslint:disable-next-line:cognitive-complexity
+  public then<TResult1, TResult2>(onFulfilled: (value: T) => never | TResult1 | Promise<TResult1>, onRejected?: (reason: any) => never | TResult2 | Promise<TResult2>): Promise<void | TResult1 | TResult2> {
     const promise = new Promise<void | TResult1 | TResult2>((resolve, reject) => {
       this.onFilfilled = value => {
         try {
           const newResult = onFulfilled(value)
-          resolvePromise(newResult, (newValue, newReason) => {
-            if (newValue !== undefined) {
-              resolve(newValue)
-            } else {
-              reject(newReason)
-            }
-          })
+          resolvePromise(newResult, (newValue, newReason) => newValue !== undefined ? resolve(newValue) : reject(newReason))
         } catch (reason) {
           reject(reason)
         }
@@ -142,18 +138,12 @@ export default class Promise<T> {
     return promise
   }
 
-  public catch<TResult> (onRejected: (reason: any) => never | TResult | Promise<TResult>): Promise<void | TResult> {
+  public catch<TResult>(onRejected: (reason: any) => never | TResult | Promise<TResult>): Promise<void | TResult> {
     return new Promise<void | TResult>((resolve, reject) => {
       this.onCatched = reason => {
         try {
           const newResult = onRejected(reason)
-          resolvePromise(newResult, (newValue, newReason) => {
-            if (newValue !== undefined) {
-              resolve(newValue)
-            } else {
-              reject(newReason)
-            }
-          })
+          resolvePromise(newResult, (newValue, newReason) => newValue !== undefined ? resolve(newValue) : reject(newReason))
         } catch (newReason) {
           reject(newReason)
         }
@@ -164,7 +154,7 @@ export default class Promise<T> {
     })
   }
 
-  private reject (reason: any) {
+  private reject(reason: any) {
     if (reason) {
       this.state = State.rejected
       this.reason = reason
@@ -179,7 +169,7 @@ export default class Promise<T> {
   }
 }
 
-function resolvePromise<T> (promise: T | Promise<T>, next: (value: T | undefined, reason: any) => void) {
+function resolvePromise<T>(promise: T | Promise<T>, next: (value: T | undefined, reason: any) => void) {
   if (promise instanceof Promise) {
     promise.then(value => {
       resolvePromise(value, next)
@@ -192,7 +182,7 @@ function resolvePromise<T> (promise: T | Promise<T>, next: (value: T | undefined
 }
 
 const enum State {
-    pending,
-    fulfilled,
-    rejected
+  pending,
+  fulfilled,
+  rejected
 }
