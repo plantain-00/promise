@@ -1,5 +1,7 @@
 import Promise from '../dist/nodejs/index'
 
+// tslint:disable:prefer-promise-shorthand
+
 it('resolve then', () => {
   new Promise<number>((resolve, reject) => {
     resolve(1)
@@ -143,9 +145,7 @@ it('promise.all resolve', () => {
       }, 10)
     }),
     new Promise(resolve => {
-      setTimeout(() => {
-        resolve(16)
-      }, 10)
+      setTimeout(() => { resolve(16) }, 10)
     })
   ]).then(values => {
     expect(values).toEqual([15, 16])

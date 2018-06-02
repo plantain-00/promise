@@ -1,3 +1,5 @@
+// tslint:disable:prefer-promise-shorthand
+
 /**
  * @public
  */
